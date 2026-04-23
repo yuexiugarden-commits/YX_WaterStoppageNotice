@@ -59,8 +59,8 @@
                                 <input type="text" id="floorFrom" value="4" placeholder="樓層" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
                             </div>
                             <div class="flex-1">
-                                <span class="text-xs text-gray-400 uppercase font-bold">由 (From) 單位</span>
-                                <input type="text" id="unitFrom" placeholder="單位" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
+                                <span class="text-xs text-gray-400 uppercase font-bold">由 (From) 座</span>
+                                <input type="text" id="unitFrom" placeholder="座號" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
@@ -69,8 +69,8 @@
                                 <input type="text" id="floorTo" value="38" placeholder="樓層" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
                             </div>
                             <div class="flex-1">
-                                <span class="text-xs text-gray-400 uppercase font-bold">至 (To) 單位</span>
-                                <input type="text" id="unitTo" placeholder="單位" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
+                                <span class="text-xs text-gray-400 uppercase font-bold">至 (To) 座</span>
+                                <input type="text" id="unitTo" placeholder="座號" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
                             </div>
                         </div>
                     </div>
@@ -170,7 +170,7 @@
                                 <span class="text-blue-600 font-bold mr-2 mt-1">📍</span>
                                 <div>
                                     <p class="text-sm text-blue-500 font-bold uppercase">影響範圍</p>
-                                    <p id="p-range" class="text-xl font-bold text-gray-800">第一座 (A座) (4 樓 至 38 樓)</p>
+                                    <p id="p-range" class="text-xl font-bold text-gray-800">第一座 (4 樓 至 38 樓)</p>
                                 </div>
                             </div>
                             <div class="flex items-start">
@@ -244,27 +244,22 @@
         function updatePreview() {
             // 獲取座數
             const blockElems = document.getElementsByName('blockSelect');
-            let rawBlock = "第一座";
+            let displayBlock = "第一座";
             for (const elem of blockElems) {
                 if (elem.checked) {
-                    rawBlock = elem.value;
+                    displayBlock = elem.value;
                     break;
                 }
             }
             
-            // 根據座數補充 A/E 標記
-            let displayBlock = rawBlock;
-            if (rawBlock === "第一座") displayBlock = "第一座 (A座)";
-            if (rawBlock === "第二座") displayBlock = "第二座 (E座)";
-
-            // 獲取樓層與單位
+            // 獲取樓層與座號
             const floorFrom = document.getElementById('floorFrom').value || "-";
             const unitFrom = document.getElementById('unitFrom').value.trim();
             const floorTo = document.getElementById('floorTo').value || "-";
             const unitTo = document.getElementById('unitTo').value.trim();
             
-            const fromStr = unitFrom ? `${floorFrom} 樓 ${unitFrom} 室` : `${floorFrom} 樓`;
-            const toStr = unitTo ? `${floorTo} 樓 ${unitTo} 室` : `${floorTo} 樓`;
+            const fromStr = unitFrom ? `${floorFrom} 樓 ${unitFrom} 座` : `${floorFrom} 樓`;
+            const toStr = unitTo ? `${floorTo} 樓 ${unitTo} 座` : `${floorTo} 樓`;
 
             // 獲取日期與時間
             const startDate = document.getElementById('startDate').value;
