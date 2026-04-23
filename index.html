@@ -163,7 +163,7 @@
                                 <span class="text-blue-600 font-bold mr-2 mt-1">📍</span>
                                 <div>
                                     <p class="text-sm text-blue-500 font-bold uppercase">影響範圍</p>
-                                    <p id="p-range" class="text-xl font-bold text-gray-800">第一座 (A座) (1 樓至 25 樓)</p>
+                                    <p id="p-range" class="text-xl font-bold text-gray-800">第一座 (A座) (4 樓至 38 樓)</p>
                                 </div>
                             </div>
                             <div class="flex items-start">
@@ -194,8 +194,8 @@
                         <div class="flex items-center gap-2 mb-3">
                             <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold border border-yellow-200">溫馨提示</span>
                         </div>
-                        <ul class="space-y-2 text-gray-600 font-medium text-sm leading-relaxed">
-                            <li class="flex items-start gap-2">
+                        <ul id="tips-list" class="space-y-2 text-gray-600 font-medium text-sm leading-relaxed">
+                            <li id="flush-tip" class="flex items-start gap-2">
                                 <span class="text-red-600">●</span>
                                 <span class="text-red-600 font-bold">停水期間請勿沖廁，以免影響工程人員安全及進度，防止渠道阻塞。</span>
                             </li>
@@ -262,6 +262,14 @@
                     selectedLocation = elem.value;
                     break;
                 }
+            }
+
+            // 條件邏輯：如果位置是「廚房」，隱藏沖廁提示
+            const flushTip = document.getElementById('flush-tip');
+            if (selectedLocation === "廚房") {
+                flushTip.style.display = "none";
+            } else {
+                flushTip.style.display = "flex";
             }
 
             // 格式化日期顯示
