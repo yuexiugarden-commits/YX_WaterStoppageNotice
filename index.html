@@ -37,34 +37,41 @@
                 <!-- 受影響座數 -->
                 <section>
                     <label class="block text-sm font-bold text-gray-700 mb-3">受影響座數</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-2 gap-3">
                         <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-blue-50 transition">
-                            <input type="radio" name="blockSelect" value="第一座 (A座)" checked class="h-4 w-4 text-blue-600" onchange="updatePreview()">
-                            <span class="ml-2 text-gray-700">第一座 (A座)</span>
+                            <input type="radio" name="blockSelect" value="第一座" checked class="h-4 w-4 text-blue-600" onchange="updatePreview()">
+                            <span class="ml-2 text-gray-700">第一座</span>
                         </label>
                         <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-blue-50 transition">
-                            <input type="radio" name="blockSelect" value="第二座 (E座)" class="h-4 w-4 text-blue-600" onchange="updatePreview()">
-                            <span class="ml-2 text-gray-700">第二座 (E座)</span>
-                        </label>
-                        <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-blue-50 transition">
-                            <input type="radio" name="blockSelect" value="第一座 (A座) 及 第二座 (E座)" class="h-4 w-4 text-blue-600" onchange="updatePreview()">
-                            <span class="ml-2 text-gray-700">兩座同時</span>
+                            <input type="radio" name="blockSelect" value="第二座" class="h-4 w-4 text-blue-600" onchange="updatePreview()">
+                            <span class="ml-2 text-gray-700">第二座</span>
                         </label>
                     </div>
                 </section>
                 
-                <!-- 受影響樓層 -->
+                <!-- 受影響樓層及單位 -->
                 <section>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">受影響樓層</label>
-                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300">
-                        <div class="flex-1">
-                            <span class="text-xs text-gray-400 uppercase font-bold">由 (From)</span>
-                            <input type="text" id="floorFrom" value="4" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">受影響樓層及單位</label>
+                    <div class="bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300 space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="flex-1">
+                                <span class="text-xs text-gray-400 uppercase font-bold">由 (From) 樓層</span>
+                                <input type="text" id="floorFrom" value="4" placeholder="樓層" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
+                            </div>
+                            <div class="flex-1">
+                                <span class="text-xs text-gray-400 uppercase font-bold">由 (From) 單位</span>
+                                <input type="text" id="unitFrom" placeholder="單位" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
+                            </div>
                         </div>
-                        <div class="text-gray-400 mt-5">至</div>
-                        <div class="flex-1">
-                            <span class="text-xs text-gray-400 uppercase font-bold">至 (To)</span>
-                            <input type="text" id="floorTo" value="38" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
+                        <div class="flex items-center gap-4">
+                            <div class="flex-1">
+                                <span class="text-xs text-gray-400 uppercase font-bold">至 (To) 樓層</span>
+                                <input type="text" id="floorTo" value="38" placeholder="樓層" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
+                            </div>
+                            <div class="flex-1">
+                                <span class="text-xs text-gray-400 uppercase font-bold">至 (To) 單位</span>
+                                <input type="text" id="unitTo" placeholder="單位" class="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -163,7 +170,7 @@
                                 <span class="text-blue-600 font-bold mr-2 mt-1">📍</span>
                                 <div>
                                     <p class="text-sm text-blue-500 font-bold uppercase">影響範圍</p>
-                                    <p id="p-range" class="text-xl font-bold text-gray-800">第一座 (A座) (4 樓至 38 樓)</p>
+                                    <p id="p-range" class="text-xl font-bold text-gray-800">第一座 (A座) (4 樓 至 38 樓)</p>
                                 </div>
                             </div>
                             <div class="flex items-start">
@@ -237,17 +244,29 @@
         function updatePreview() {
             // 獲取座數
             const blockElems = document.getElementsByName('blockSelect');
-            let selectedBlock = "";
+            let rawBlock = "第一座";
             for (const elem of blockElems) {
                 if (elem.checked) {
-                    selectedBlock = elem.value;
+                    rawBlock = elem.value;
                     break;
                 }
             }
+            
+            // 根據座數補充 A/E 標記
+            let displayBlock = rawBlock;
+            if (rawBlock === "第一座") displayBlock = "第一座 (A座)";
+            if (rawBlock === "第二座") displayBlock = "第二座 (E座)";
 
-            // 獲取樓層與時間
+            // 獲取樓層與單位
             const floorFrom = document.getElementById('floorFrom').value || "-";
+            const unitFrom = document.getElementById('unitFrom').value.trim();
             const floorTo = document.getElementById('floorTo').value || "-";
+            const unitTo = document.getElementById('unitTo').value.trim();
+            
+            const fromStr = unitFrom ? `${floorFrom} 樓 ${unitFrom} 室` : `${floorFrom} 樓`;
+            const toStr = unitTo ? `${floorTo} 樓 ${unitTo} 室` : `${floorTo} 樓`;
+
+            // 獲取日期與時間
             const startDate = document.getElementById('startDate').value;
             const duration = document.getElementById('duration').value;
             const timeFrom = document.getElementById('timeFrom').value;
@@ -280,7 +299,7 @@
             }
 
             // 更新預覽
-            document.getElementById('p-range').innerText = `${selectedBlock} (${floorFrom} 樓至 ${floorTo} 樓)`;
+            document.getElementById('p-range').innerText = `${displayBlock} (${fromStr} 至 ${toStr})`;
             document.getElementById('p-location').innerText = selectedLocation;
             document.getElementById('p-date').innerText = dateDisplay;
             document.getElementById('p-duration').innerText = `共 ${duration} 天`;
